@@ -7,6 +7,7 @@ const close_start_meeting_btn = document.getElementById("close_start_meeting_btn
 const close_join_meeting_btn  = document.getElementById("close_join_meeting_btn")
 
 
+
 //the below two buttons refer to the input buttons when you enter password to start or join meeting
 const start_meet_btn = document.getElementById("start_meeting");
 const join_meet_btn = document.getElementById("join_meeting");
@@ -59,6 +60,40 @@ start_meet_btn.addEventListener("click",async()=>{
     //sets the entire url of the web page which adds a new entry in the browser history
     window.location.href = `/new-chat?meet-id=${meeting_id}`
 
+})
+
+join_meet_btn.addEventListener("click",async()=>{
+
+    const meet_id = document.getElementById("joinee_meeting_id").value;
+    const pass = document.getElementById("joinee_password").value
+
+    if(!meet_id || !pass){
+        alert("Please provide all the credentials");
+        return;
+    }
+
+    const data = {
+        meeting_id: meet_id,
+        password: pass,
+    }
+
+    const options = {
+        method: "POST",
+        headers:{
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    }
+
+    await fetch("/verify-join-meeting",options).then((res)=>{
+       if(!res.ok){
+          return res.json().then((res)=>{
+            alert(res.message)
+          })
+       } 
+    })
+   
+           
 })
 
 const fetchMessageID = async()=>{
