@@ -1,6 +1,7 @@
 const currentUrl = window.location.href;
 const urlParams = new URLSearchParams(currentUrl);
 const meeting_id = urlParams.toString().substring(55);
+//console.log(meeting_id);
 const meeting_id_header = document.getElementById("meeting_id_tag");
 let localVideoEl = document.getElementById("local-video");
 let remoteVideoEl = document.getElementById("remote-video");
@@ -12,6 +13,7 @@ const socket = io.connect("https://localhost:8000",{
     auth:{
         meeting_id,
         username,
+        type: "offerer"
     }
 })
 
@@ -89,21 +91,21 @@ const createPeerConnection = async(offerObj)=>{
 
         //add tracks that can be sent once the connection is established;
         localstream.getTracks().forEach((track)=> {
-            console.log(track);
-            peerConnection.addTrack(track);
+            //console.log(track);
+            peerConnection.addTrack(track,localstream);
         })
 
-        peerConnection.addEventListener("signalingstatechange",(e)=>{
-            console.log(peerConnection.signalingState)
-        })
+        // peerConnection.addEventListener("signalingstatechange",(e)=>{
+        //     console.log(peerConnection.signalingState)
+        // })
 
-        peerConnection.addEventListener("icecandidateerror",(e)=>{
-            console.log("errorrrrr")
-        })
+        // peerConnection.addEventListener("icecandidateerror",(e)=>{
+        //     console.log("errorrrrr")
+        // })
 
         //on receiving ice candidates sending it to the server
         peerConnection.addEventListener('icecandidate',(e)=>{
-            console.log(e.candidate);
+            //console.log(e.candidate);
             if(e.candidate){
                 socket.emit('sendIceCandidateToSignallingServer',{
                     iceCandidate: e.candidate,
@@ -126,3 +128,12 @@ const createPeerConnection = async(offerObj)=>{
 
 call();
 
+const addNewIceCandidates = (iceCandidate)=>{
+    peerConnection.addIceCandidate(iceCandidate);
+    console.log("ice candidates from caller");
+}
+
+const addRemoteDescription = async (offerObj)=>{
+    await peerConnection.setRemoteDescription(offerObj.answer);
+    console.log("set remoteDescription successfully")
+}

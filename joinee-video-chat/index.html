@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-
     <style>
     *{
         margin: 0;
@@ -18,6 +17,9 @@
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+    #main{
+        display: none;
     }
     .video_box{
         width: 100%;
@@ -53,34 +55,47 @@
         border-radius: 15px;
         margin: 20px 0;
     }
-
-    @media screen and (max-width: 650px){
-
-        .video_box{
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        .vid{
-
-          width: 100%;
-          height: 200px;
-          margin: 25px 10px;
-          border: 2px solid grey;
-          border-radius: 15px;
-        } 
-        .header > h1{
-            font-size: 12px;
-            font-weight: 800;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 15px 0;
-       }
+    #joinee_btn_box{
+        width: 100vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
-    </style>
+    #joinee_btn{
+        width: 150px;
+        padding: 10px;
+        background-color: rgb(31, 167, 31);
+        color: white;
+        border-radius: 8px;
+    }
+
+@media screen and (max-width: 650px){
+
+    .video_box{
+       display: flex;
+       flex-direction: column;
+       justify-content: center;
+       align-items: center;
+    }
+    .vid{
+       width: 100%;
+       height: 200px;
+       margin: 25px 10px;
+       border: 2px solid grey;
+       border-radius: 15px;
+    } 
+    .header > h1{
+       font-size: 12px;
+       font-weight: 800;
+       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+       margin: 15px 0;
+     }
+}
+    
+</style>
 </head>
 <body>
-    <div class="main">
+    <div id="main">
         <div class="header">
           <h1>Meeting ID: <span id="meeting_id_tag"></span></h1>
         </div>
@@ -93,8 +108,12 @@
           <button id="disconnect_btn">Disconnect</button>
        </div>
     </div>
+    <div id="joinee_btn_box">
+
+    </div>
+
     <script src="../socket.io/socket.io.js"></script>
-    <script src="./video.js"></script>
+    <script src="./joinee.js"></script>
     <script src="./socketListeners.js"></script>
 </body>
 </html>

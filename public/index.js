@@ -65,7 +65,8 @@ start_meet_btn.addEventListener("click",async()=>{
 join_meet_btn.addEventListener("click",async()=>{
 
     const meet_id = document.getElementById("joinee_meeting_id").value;
-    const pass = document.getElementById("joinee_password").value
+    const pass = document.getElementById("joinee_password").value;
+    let isValidMeeting = false;
 
     if(!meet_id || !pass){
         alert("Please provide all the credentials");
@@ -85,14 +86,19 @@ join_meet_btn.addEventListener("click",async()=>{
         body: JSON.stringify(data)
     }
 
-    await fetch("/verify-join-meeting",options).then((res)=>{
+    await fetch("/verify-join-meeting",options).then(async(res)=>{
        if(!res.ok){
-          return res.json().then((res)=>{
+          return await res.json().then((res)=>{
             alert(res.message)
           })
-       } 
+        } 
+        else{
+    
+            return res.json().then(()=>{
+                window.location.href = `/join-chat?meet-id=${meet_id}`
+            })
+        }
     })
-   
            
 })
 
