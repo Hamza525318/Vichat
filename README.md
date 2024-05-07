@@ -5,7 +5,9 @@ make sure to set up the https otherwise application wont work
 run the commands in terminal of your project directory:
 
 npm i mkcert
+<br>
 npm create-ca
+<br>
 npm create-cert
 
 the above commands help us to run our local server with https
