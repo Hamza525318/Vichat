@@ -53,6 +53,55 @@
         border-radius: 15px;
         margin: 20px 0;
     }
+    #modal_container{
+        width: 250px;
+        padding: 10px;
+        background-color:#fff;
+        border: 1px solid grey;
+        border-radius: 12px;
+        position: absolute;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        top: 40%;
+        left: 40%;
+        z-index: 999;
+        display: none;
+        
+    }
+    #modal_container h4{
+        font-size: 14px;
+        font-weight: 700;
+        margin: 15px 0px;
+    }
+    .modal_buttons{
+        display: flex;
+        align-items: center;
+    }
+    #yes_btn{
+        width: 75px;
+        padding: 5px;
+        background-color: green;
+        color: white;
+        border: none;
+        border-radius: 10px;
+    }
+    #no_btn{
+        margin: 0px 10px;
+        width: 75px;
+        padding: 5px;
+        background-color: rgb(230, 65, 65);
+        border: none;
+        border-radius: 10px;
+        color: white;
+    }
+    .modal_active{
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .bg-color{
+        background-color: rgba(0, 0, 0,0.6);
+    }
 
     @media screen and (max-width: 650px){
 
@@ -80,6 +129,13 @@
     </style>
 </head>
 <body>
+    <div id="modal_container">
+        <h4>Are you sure you want to disconnect?</h4>
+        <div class="modal_buttons">
+           <button id="yes_btn">Yes</button>
+           <button id="no_btn">No</button>
+        </div>
+     </div>
     <div class="main">
         <div class="header">
           <h1>Meeting ID: <span id="meeting_id_tag"></span></h1>

@@ -169,4 +169,63 @@ io.on("connection",(socket)=>{
             }
         }
     })
+
+    socket.on("disconnect_call",(ackFunc)=>{
+        console.log("someone disconnected");
+        
+        const user = users.get(socket.id);
+        if(!user){
+            console.log("user was never connected");
+            return;
+        }
+
+        map.delete(socket.id);
+        //console.log(user);
+        const offerToUpdate = offers.find((offer)=> offer.offererMeetingID == user.id);
+
+        if(user.type === "offerer"){
+            offerToUpdate.offer = null;
+            offerToUpdate.offererIceCandidates = [];
+            const receiverSocketId = findSocketId(users,"answerer",offerToUpdate.offererMeetingID);
+            socket.to(receiverSocketId).emit("client_disconnected");
+        }
+        else{
+            offerToUpdate.answer = null;
+            offerToUpdate.answererIceCandidates = [];
+            const answererSocketId = findSocketId(users,"offerer",offerToUpdate.offererMeetingID);
+            socket.to(answererSocketId).emit("client_disconnected");
+        }
+        ackFunc("CALL ENDED");
+
+        console.log(offerToUpdate);
+    })
+     
+    //this event executes automatically when user closes browser or tab 
+    socket.on("disconnect",()=>{
+        //console.log("someone disconnected");
+        
+        const user = users.get(socket.id);
+        if(!user){
+            //console.log("user was never connected");
+            return;
+        }
+
+        map.delete(socket.id);
+        //console.log(user);
+        const offerToUpdate = offers.find((offer)=> offer.offererMeetingID == user.id);
+
+        if(!offerToUpdate){
+            console.log("no offer to update");
+            return;
+        }
+
+        if(user.type === "offerer"){
+            offerToUpdate.offer = null;
+            offerToUpdate.offererIceCandidates = [];
+        }
+        else{
+            offerToUpdate.answer = null;
+            offerToUpdate.answererIceCandidates = [];
+        }
+    })
 })

@@ -8,3 +8,7 @@ socket.on("answerResponse",(offerObj)=>{
      
     addRemoteDescription(offerObj);
 })
+
+socket.on("client_disconnected",()=>{
+    removeRemoteDescription();
+})

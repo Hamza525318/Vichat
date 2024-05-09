@@ -6,6 +6,12 @@ const meeting_id_header = document.getElementById("meeting_id_tag");
 let localVideoEl = document.getElementById("local-video");
 let remoteVideoEl = document.getElementById("remote-video");
 const username = "Ham-"+Math.floor(Math.random()* 1000000);
+const disconnect_btn = document.getElementById("disconnect_btn");
+const modal_container = document.getElementById("modal_container");
+const modal_yes_btn = document.getElementById("yes_btn");
+const modal_no_btn = document.getElementById("no_btn");
+
+
 
 //console.log(meeting_id);
 meeting_id_header.innerText = meeting_id
@@ -88,6 +94,7 @@ const createPeerConnection = async(offerObj)=>{
         //console.log(peerConnection);
         remotestream = new MediaStream();
         remoteVideoEl.srcObject = remotestream;
+        //console.log(peerConnection.signalingState);
 
         //add tracks that can be sent once the connection is established;
         localstream.getTracks().forEach((track)=> {
@@ -134,6 +141,46 @@ const addNewIceCandidates = (iceCandidate)=>{
 }
 
 const addRemoteDescription = async (offerObj)=>{
+    console.log(peerConnection.signalingState);
     await peerConnection.setRemoteDescription(offerObj.answer);
     console.log("set remoteDescription successfully")
 }
+
+const removeRemoteDescription = async()=>{
+    console.log(peerConnection.signalingState);
+    remotestream = new MediaStream();
+    remoteVideoEl.srcObject = remotestream;
+    //await peerConnection.setRemoteDescription(new RTCSessionDescription({type:'answer',sdp:''}));
+}
+
+const disconnectCall = ()=>{
+
+    socket.emitWithAck("disconnect_call").then(async (res)=>{
+        closeModal();
+        window.location.replace("https://localhost:8000");
+        alert(res);
+    })
+    .catch((error)=>{
+        alert("Their was an error!!");
+        window.location.replace("https://localhost:8000");
+    })
+    
+}
+
+const closeModal = ()=>{
+    modal_container.style.display = "none";
+    modal_container.classList.remove("modal_active");
+    document.body.classList.remove("bg-color");
+}
+
+const openModal = ()=>{
+    
+    modal_container.style.display = "flex";
+    modal_container.classList.add("modal_active");
+    document.body.classList.add("bg-color")
+}
+
+//for disconnecting from call;
+disconnect_btn.addEventListener("click",openModal);
+modal_no_btn.addEventListener("click",closeModal);
+modal_yes_btn.addEventListener("click",disconnectCall);
