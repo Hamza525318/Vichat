@@ -1,6 +1,6 @@
 const url = window.location.href
 const urlParams = new URLSearchParams(url);
-const meeting_id = urlParams.toString().substring(56);
+const meeting_id = urlParams.toString().substring(59);
 const username = "Ham-"+(Math.random()*100000);
 const video_box = document.getElementById("main")
 const join_meet_div = document.getElementById("joinee_btn_box");
@@ -11,7 +11,7 @@ const modal_container = document.getElementById("modal_container");
 const modal_yes_btn = document.getElementById("yes_btn");
 const modal_no_btn = document.getElementById("no_btn");
 
-const socket = io.connect("https://localhost:8000",{
+const socket = io.connect("https://192.168.1.15:8000",{
     auth:{
         meeting_id,
         username,
@@ -139,22 +139,26 @@ const disconnectCall = ()=>{
     peerConnection.close();
     peerConnection.setRemoteDescription(null);
     peerConnection.setLocalDescription(null);
+    remotestream = new MediaStream();
+    remoteVideoEl.srcObject  = remotestream;
     socket.emitWithAck("disconnect_call").then((res)=>{
         closeModal();
-        window.location.replace("https://localhost:8000");
+        window.location.replace("https://192.168.1.15:8000");
         alert(res);
     })
     .catch((error)=>{
         alert("Their was an error!!");
-        window.location.replace("https://localhost:8000");
+        window.location.replace("https://192.168.1.15:8000");
     })
     
 }
 
 const callerEndedCall = ()=>{
     
+    remotestream = new MediaStream();
+    remoteVideoEl.srcObject = remotestream;
     alert("CALLER ENDED THE CALL");
-    window.location.replace("https://localhost:8000");
+    window.location.replace("https://192.168.1.15:8000");
 }
 
 const closeModal = ()=>{

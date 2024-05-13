@@ -1,7 +1,8 @@
 const currentUrl = window.location.href;
 const urlParams = new URLSearchParams(currentUrl);
-const meeting_id = urlParams.toString().substring(55);
-//console.log(meeting_id);
+//console.log(urlParams.toString());
+const meeting_id = urlParams.toString().substring(58);
+console.log(meeting_id);
 const meeting_id_header = document.getElementById("meeting_id_tag");
 let localVideoEl = document.getElementById("local-video");
 let remoteVideoEl = document.getElementById("remote-video");
@@ -15,7 +16,7 @@ const modal_no_btn = document.getElementById("no_btn");
 
 //console.log(meeting_id);
 meeting_id_header.innerText = meeting_id
-const socket = io.connect("https://localhost:8000",{
+const socket = io.connect("https://192.168.1.15:8000",{
     auth:{
         meeting_id,
         username,
@@ -168,15 +169,17 @@ const removeRemoteDescription = async()=>{
 }
 
 const disconnectCall = ()=>{
-
+     
+    remotestream = new MediaStream();
+    remoteVideoEl.srcObject = remotestream;
     socket.emitWithAck("disconnect_call").then(async (res)=>{
         closeModal();
-        window.location.replace("https://localhost:8000");
+        window.location.replace("https://192.168.1.15:8000");
         alert("YOU HAVE ENDED THE CALL");
     })
     .catch((error)=>{
         alert("Their was an error!!");
-        window.location.replace("https://localhost:8000");
+        window.location.replace("https://192.168.1.15:8000");
     })
     
 }

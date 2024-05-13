@@ -29,7 +29,9 @@ httpsServer.listen(8000,()=>{
 const io = socket_io(httpsServer,{
     cors:{
         origin: [
-            "https://localhost"
+            "https://localhost",
+            "https://192.168.1.15",
+            'https://192.168.1.15:8000/socket.io'
         ],
         methods:["GET","POST"]
     }
@@ -50,7 +52,7 @@ app.post("/get-message-id",(req,res)=>{
 app.post("/verify-join-meeting",(req,res)=>{
     const meeting_id = req.body.meeting_id;
     const password = req.body.password;
-    // console.log(map);
+    //console.log(map);
     if(!map.has(meeting_id)){
         res.status(404).json({
             message: "Meeting not found"
