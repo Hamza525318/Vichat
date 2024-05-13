@@ -102,9 +102,14 @@ const createPeerConnection = async(offerObj)=>{
             peerConnection.addTrack(track,localstream);
         })
 
-        // peerConnection.addEventListener("signalingstatechange",(e)=>{
-        //     console.log(peerConnection.signalingState)
+        peerConnection.addEventListener("signalingstatechange",(e)=>{
+            console.log(peerConnection.signalingState)
+        })
+        
+        // peerConnection.onsignalingstatechange((e)=>{
+        //     console.log("event change trigger")
         // })
+        
 
         // peerConnection.addEventListener("icecandidateerror",(e)=>{
         //     console.log("errorrrrr")
@@ -122,12 +127,17 @@ const createPeerConnection = async(offerObj)=>{
             }
         })
 
+
         //adding an event listener to add tracks to remote stream when received from other side
         peerConnection.addEventListener('track',(e)=>{
             e.streams[0].getTracks().forEach((track)=>{
                 remotestream.addTrack(track,remotestream)
             })
         })
+
+        // peerConnection.onClose = ()=>{
+        //     console.log("connection terminated")
+        // } 
 
         resolve();
     })
@@ -147,9 +157,13 @@ const addRemoteDescription = async (offerObj)=>{
 }
 
 const removeRemoteDescription = async()=>{
-    console.log(peerConnection.signalingState);
+   // console.log(peerConnection.signalingState);
     remotestream = new MediaStream();
     remoteVideoEl.srcObject = remotestream;
+    console.log("control came to remove remote description")
+    await call();
+    //await peerConnection.setRemoteDescription(new RTCSessionDescription({sdp:'',type:"answer"}));
+    //console.log(peerConnection.currentRemoteDescription);
     //await peerConnection.setRemoteDescription(new RTCSessionDescription({type:'answer',sdp:''}));
 }
 
@@ -158,7 +172,7 @@ const disconnectCall = ()=>{
     socket.emitWithAck("disconnect_call").then(async (res)=>{
         closeModal();
         window.location.replace("https://localhost:8000");
-        alert(res);
+        alert("YOU HAVE ENDED THE CALL");
     })
     .catch((error)=>{
         alert("Their was an error!!");

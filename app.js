@@ -4,7 +4,7 @@ const app = express();
 
 
 app.use(express.static("public"));
-app.use("/new-chat",express.static("video-chat",{
+app.use("/new-chat",express.static("caller-video-chat",{
     setHeaders: (res,path,stat)=>{
         if(path.endsWith(".js")){
             res.setHeader('Content-Type','application/javascript')

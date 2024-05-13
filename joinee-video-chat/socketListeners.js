@@ -9,6 +9,11 @@ socket.on("receivedIceCandidatesFromServer",(iceCandidates)=>{
     console.log("here are your iceCandidates from caller");
     addNewIceCandidates(iceCandidates);
 })
+
+socket.on("offerer_disconnected",()=>{
+    callerEndedCall();
+})
+
 const createOffer = (offer)=>{
 
     const join_meet_div = document.getElementById("joinee_btn_box");
@@ -18,3 +23,4 @@ const createOffer = (offer)=>{
     btn.addEventListener("click",()=>answerToOffer(offer));
     join_meet_div.appendChild(btn);
 }
+

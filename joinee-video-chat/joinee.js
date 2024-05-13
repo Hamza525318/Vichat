@@ -56,7 +56,8 @@ const answerToOffer = async(offer)=>{
     //emit the answer to the server so that it can send it to client
     socket.emitWithAck('newAnswer',offer).then((offererIceCandidates)=>{
         offererIceCandidates.forEach((ice)=>{
-            peerConnection.addIceCandidate(ice);
+            peerConnection.addIceCandidate
+            (ice);
         })
     })
 
@@ -148,6 +149,12 @@ const disconnectCall = ()=>{
         window.location.replace("https://localhost:8000");
     })
     
+}
+
+const callerEndedCall = ()=>{
+    
+    alert("CALLER ENDED THE CALL");
+    window.location.replace("https://localhost:8000");
 }
 
 const closeModal = ()=>{

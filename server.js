@@ -7,7 +7,7 @@ const map = new Map();
 const socket_io = require("socket.io")
 const users = new Map();
 
-const offers = [
+let offers = [
     //offererUsername -> meeting_id
     //offer
     //offererIceCandidates6
@@ -171,8 +171,7 @@ io.on("connection",(socket)=>{
     })
 
     socket.on("disconnect_call",(ackFunc)=>{
-        console.log("someone disconnected");
-        
+        //console.log("someone disconnected");
         const user = users.get(socket.id);
         if(!user){
             console.log("user was never connected");
@@ -182,22 +181,39 @@ io.on("connection",(socket)=>{
         map.delete(socket.id);
         //console.log(user);
         const offerToUpdate = offers.find((offer)=> offer.offererMeetingID == user.id);
-
+        const filtered_offers = offers.filter((offer)=>offer.offererMeetingID != user.id);
+        console.log(filtered_offers);
+        offers = [...filtered_offers];
+        
         if(user.type === "offerer"){
-            offerToUpdate.offer = null;
-            offerToUpdate.offererIceCandidates = [];
             const receiverSocketId = findSocketId(users,"answerer",offerToUpdate.offererMeetingID);
-            socket.to(receiverSocketId).emit("client_disconnected");
+            socket.to(receiverSocketId).emit("offerer_disconnected");
+            if(users.has(receiverSocketId)){
+                console.log(map.get(receiverSocketId));
+                map.delete(receiverSocketId);
+            }
         }
         else{
-            offerToUpdate.answer = null;
-            offerToUpdate.answererIceCandidates = [];
-            const answererSocketId = findSocketId(users,"offerer",offerToUpdate.offererMeetingID);
-            socket.to(answererSocketId).emit("client_disconnected");
+
+          const answererSocketId = findSocketId(users,"offerer",offerToUpdate.offererMeetingID);
+          socket.to(answererSocketId).emit("client_disconnected");
+
         }
+        // if(user.type === "offerer"){
+        //     offerToUpdate.offer = null;
+        //     offerToUpdate.offererIceCandidates = [];
+        //     const receiverSocketId = findSocketId(users,"answerer",offerToUpdate.offererMeetingID);
+        //     socket.to(receiverSocketId).emit("client_disconnected");
+        // }
+        // else{
+        //     offerToUpdate.answer = null;
+        //     offerToUpdate.answererIceCandidates = [];
+        //     const answererSocketId = findSocketId(users,"offerer",offerToUpdate.offererMeetingID);
+        //     socket.to(answererSocketId).emit("client_disconnected");
+        // }
         ackFunc("CALL ENDED");
 
-        console.log(offerToUpdate);
+        //console.log(offerToUpdate);
     })
      
     //this event executes automatically when user closes browser or tab 
@@ -205,27 +221,34 @@ io.on("connection",(socket)=>{
         //console.log("someone disconnected");
         
         const user = users.get(socket.id);
+        console.log(user);
         if(!user){
-            //console.log("user was never connected");
+            console.log("user was never connected");
             return;
         }
 
         map.delete(socket.id);
-        //console.log(user);
         const offerToUpdate = offers.find((offer)=> offer.offererMeetingID == user.id);
-
         if(!offerToUpdate){
             console.log("no offer to update");
             return;
         }
-
+        const filtered_offers = offers.filter((offer)=>offer.offererMeetingID != user.id);
+        //console.log(filtered_offers);
+        offers = [...filtered_offers];
         if(user.type === "offerer"){
-            offerToUpdate.offer = null;
-            offerToUpdate.offererIceCandidates = [];
+            const receiverSocketId = findSocketId(users,"answerer",offerToUpdate.offererMeetingID);
+            socket.to(receiverSocketId).emit("offerer_disconnected");
+            if(users.has(receiverSocketId)){
+                console.log(map.get(receiverSocketId));
+                map.delete(receiverSocketId);
+            }
         }
         else{
-            offerToUpdate.answer = null;
-            offerToUpdate.answererIceCandidates = [];
+
+          const answererSocketId = findSocketId(users,"offerer",offerToUpdate.offererMeetingID);
+          socket.to(answererSocketId).emit("client_disconnected");
+
         }
     })
 })
